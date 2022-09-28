@@ -150,6 +150,12 @@ class DjangoContext:
                     return field
         raise ValueError("No primary key defined")
 
+    def get_target_field(self, field: ForeignKey) -> Field:
+        target_field = field.target_field
+        while isinstance(target_field, ForeignKey):
+            target_field = target_field.target_field
+        return target_field
+
     def get_expected_types(self, api: TypeChecker, model_cls: Type[Model], *, method: str) -> Dict[str, MypyType]:
         contenttypes_in_apps = self.apps_registry.is_installed("django.contrib.contenttypes")
         if contenttypes_in_apps:
